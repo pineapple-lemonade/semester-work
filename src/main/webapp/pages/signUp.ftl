@@ -1,6 +1,6 @@
 <#include "base.ftl">
 
-<html lang="eng">
+<html lang="en">
 <#macro title>SignUp</#macro>
 <#macro header>SignUp</#macro>
 <#macro content>
