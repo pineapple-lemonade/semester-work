@@ -3,6 +3,7 @@
 <html lang="en">
 <#macro title>SignIn</#macro>
 <#macro header>SignIn</#macro>
+<#if isFailedToSignIn??><h2>Password or/and login are incorrect</h2></#if>
 <#macro content>
     <body>
     <form action="/signIn" method="post">

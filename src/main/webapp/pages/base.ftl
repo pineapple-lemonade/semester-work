@@ -5,7 +5,7 @@
 
 <body>
 <div id="header">
-    <H3><@header></@header></H3>
+    <H1><@header></@header></H1>
 </div>
 
 

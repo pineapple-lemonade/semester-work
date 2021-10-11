@@ -4,6 +4,7 @@
 <#macro title>SignUp</#macro>
 <#macro header>SignUp</#macro>
 <#macro content>
+    <#if isFailedToSignUp??><h2>User is already exists!</h2></#if>
     <body>
     <form action="/signUp" method="post">
         Email:<input type="text" name="userEmail"/>

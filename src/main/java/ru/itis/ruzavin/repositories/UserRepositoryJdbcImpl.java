@@ -1,6 +1,7 @@
 package ru.itis.ruzavin.repositories;
 
 import lombok.AllArgsConstructor;
+import ru.itis.ruzavin.dto.UserDTO;
 import ru.itis.ruzavin.models.User;
 
 import javax.sql.DataSource;
@@ -22,21 +23,20 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
 	private final DataSource dataSource;
 
-	private final Function<ResultSet, User> rowMapper = row -> {
+	private final Function<ResultSet, UserDTO> rowMapper = row -> {
 		try {
-			Integer id = row.getInt("id");
 			String nick = row.getString("nickname");
 			String email = row.getString("email");
 			String login = row.getString("login");
 			String password = row.getString("password");
-			return new User(id, nick, email, login, password);
+			return new UserDTO(nick, email, login, password);
 		} catch (SQLException e) {
 			throw new IllegalArgumentException(e);
 		}
 	};
 
 	@Override
-	public void save(User user) {
+	public void save(UserDTO user) {
 		try (Connection connection = dataSource.getConnection();
 		     PreparedStatement preparedStatement = connection.prepareStatement(SQL_SAVE_USER)) {
 			preparedStatement.setString(1, user.getNick());
@@ -50,13 +50,13 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 	}
 
 	@Override
-	public Optional<User> findUserByLogin(String login) {
+	public Optional<UserDTO> findUserByLogin(String login) {
 		try (Connection connection = dataSource.getConnection();
 		     PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_BY_LOGIN)) {
 			preparedStatement.setString(1,login);
 			ResultSet row = preparedStatement.executeQuery();
 			if(row.next()){
-				User user = rowMapper.apply(row);
+				UserDTO user = rowMapper.apply(row);
 				return Optional.of(user);
 			} else {
 				return Optional.empty();
