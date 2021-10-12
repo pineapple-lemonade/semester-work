@@ -2,7 +2,6 @@ package ru.itis.ruzavin.repositories;
 
 import lombok.AllArgsConstructor;
 import ru.itis.ruzavin.dto.UserDTO;
-import ru.itis.ruzavin.models.User;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

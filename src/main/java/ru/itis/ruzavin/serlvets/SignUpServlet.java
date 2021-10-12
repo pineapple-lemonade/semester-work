@@ -22,9 +22,9 @@ public class SignUpServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		securityService = new SecurityServiceImpl();
-		//TODO redirect to profile
-		if(securityService.signUp(req)){
 
+		if(securityService.signUp(req)){
+			resp.sendRedirect(getServletContext().getContextPath() + "/profile");
 		} else {
 			req.setAttribute("isFailedToSignUp",true);
 			getServletContext().getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
