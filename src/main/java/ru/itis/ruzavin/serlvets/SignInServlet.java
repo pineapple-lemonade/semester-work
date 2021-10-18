@@ -25,8 +25,8 @@ public class SignInServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		securityService = new SecurityServiceImpl();
 
-		if(securityService.signIn(req)){
-			resp.sendRedirect(getServletContext().getContextPath() + "/profile");
+		if(securityService.signIn(req, resp)){
+			//resp.sendRedirect(getServletContext().getContextPath() + "/profile");
 		} else {
 			req.setAttribute("userLogin", req.getParameter("userLogin"));
 			req.setAttribute("isFailedToSignIn",true);

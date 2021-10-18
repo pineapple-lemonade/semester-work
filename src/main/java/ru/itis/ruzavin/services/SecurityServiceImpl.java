@@ -5,7 +5,9 @@ import ru.itis.ruzavin.jdbc.SimpleDataSource;
 import ru.itis.ruzavin.repositories.UserRepository;
 import ru.itis.ruzavin.repositories.UserRepositoryJdbcImpl;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,6 +22,10 @@ public class SecurityServiceImpl implements SecurityService{
 
 	private static String SALT = "sdw132lsap23sd";
 
+	private final static String USER_AUTH_COOKIE_NAME = "userAuth";
+
+	private final static int AUTH_COOKIE_MAX_AGE = 60 * 60;
+
 	public SecurityServiceImpl() {
 		Properties properties = new Properties();
 		try {
@@ -31,12 +37,16 @@ public class SecurityServiceImpl implements SecurityService{
 	}
 
 	@Override
-	public boolean signIn(HttpServletRequest req) {
+	public boolean signIn(HttpServletRequest req, HttpServletResponse response) {
+		if(isSigned(req)){
+			return true;
+		}
 		String password = req.getParameter("userPass");
 		String login = req.getParameter("userLogin");
 		Optional<UserDTO> userByLogin = userRepository.findUserByLogin(login);
-		if(userByLogin.isPresent() && userByLogin.get().getPassword().equals(password)){
+		if(userByLogin.isPresent() && userByLogin.get().getPassword().equals(encrypt(password))){
 			req.setAttribute("user",userByLogin.get());
+			createAndSendAuthCookie(response);
 			return true;
 		}
 		return false;
@@ -57,7 +67,13 @@ public class SecurityServiceImpl implements SecurityService{
 
 	@Override
 	public boolean isSigned(HttpServletRequest req) {
-		return req.getSession().getAttribute("email") != null;
+		Cookie[] cookies = req.getCookies();
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals(USER_AUTH_COOKIE_NAME)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String encrypt(String password){
@@ -72,4 +88,11 @@ public class SecurityServiceImpl implements SecurityService{
 			throw new IllegalArgumentException(e);
 		}
 	}
+
+	private void createAndSendAuthCookie(HttpServletResponse response) {
+		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, "true");
+		userAuthCookie.setMaxAge(AUTH_COOKIE_MAX_AGE);
+		response.addCookie(userAuthCookie);
+	}
+
 }

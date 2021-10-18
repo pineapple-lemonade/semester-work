@@ -2,6 +2,7 @@ package ru.itis.ruzavin.serlvets;
 
 import ru.itis.ruzavin.services.SecurityService;
 import ru.itis.ruzavin.services.SecurityServiceImpl;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,11 +24,11 @@ public class SignUpServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		securityService = new SecurityServiceImpl();
 
-		if(securityService.signUp(req)){
-			resp.sendRedirect(getServletContext().getContextPath() + "/profile");
+		if (securityService.signUp(req)) {
+			req.getRequestDispatcher("/signIn").forward(req, resp);
 		} else {
-			req.setAttribute("isFailedToSignUp",true);
-			getServletContext().getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
+			req.setAttribute("isFailedToSignUp", true);
+			req.getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
 		}
 	}
 }
