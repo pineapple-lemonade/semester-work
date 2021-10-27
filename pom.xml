@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.itis.ruzavin</groupId>
-    <artifactId>semester-work-web-project</artifactId>
+    <artifactId>semester-work-first</artifactId>
     <version>0.1</version>
 
     <properties>
@@ -71,7 +71,22 @@
             <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.29.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-core</artifactId>
+            <version>1.29.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-taglib</artifactId>
+            <version>1.29.0</version>
+        </dependency>
     </dependencies>
 
 </project>

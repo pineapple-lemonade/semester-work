@@ -1,47 +1,66 @@
-<#include 'base.ftl'>
+<#include "base.ftl">
+<html>
+<#macro title>Profile</#macro>
+<style>
+    @font-face {
+        font-family: Helvetica;
+        src: url(/fonts/Helvetica.ttf)
+    }
 
-<#macro title>
-    <title>Личный кабинет</title>
-<#--    <link rel="shortcut icon" href="static/img/icon.png" type="image/png">-->
-</#macro>
-<#macro header>Hold on</#macro>
+    html {
+        font-family: Helvetica, system-ui;
+    }
+
+    .container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .avatar {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 2px solid black;
+        object-fit: cover;
+        display: block;
+        margin: 20px auto;
+    }
+
+    .button_load {
+        margin-top: 10px;
+        margin-bottom: 40px;
+    }
+
+</style>
+
 <#macro content>
-    <br>
-    <h1>Ваш личный кабинет</h1>
-    <br>
-    <table>
-        <tr>
-<#--            <td><img alt="user_img" src="/static/img/{{p}}" width="50" height="50" class="rounded-circle"></td>-->
-            <td><p class="lead"><strong><#if user?has_content>${user.nick}</#if></strong></p></td>
-<#--            <td><p class="lead"><em>${user.firstName}  ${user.secondName}</em></p></td>-->
-        </tr>
-    </table>
-    <form action="" method="post" novalidate enctype="multipart/form-data">
-        Смена аватарки
-        <table>
-            <tr>
-                <td>Поменять аватарку</td>
-                <td>Подтвердить</td>
-            </tr>
-        </table>
-    </form>
+    <body>
+    <div class="container">
+        <h1>Your Profile</h1>
+            <#if user.avatarUrl?has_content>
+                <img class="avatar" alt="IMAGE" src="${user.avatarUrl}"/>
+            <#else>
+                <img class="avatar" alt="IMAGE" src="/files/img.png"/>
+            </#if>
 
-    <br>
-    <table>
-        <tr>
-            <td><p class="lead">Ваша почта: ${user.email}</p></td>
-            <td><p class="lead">Ваш id: 0</p></td>
-        </tr>
-        <tr>
-            <td><p class="lead">Добавить рецепт</p></td>
-            <td><p class="lead"><a href="/add_theory">Добавить рецепт</a></p></td>
-        </tr>
-        <tr>
-            <td><p class="lead"><a href="/logout">Выйти</a></p></td>
-            <td><p class="lead"><a href="/delete">Удалить аккаунт</a></p></td>
-        </tr>
-    </table>
-    <br>
-<#--    <p class="lead"><a href="/read_my_theories">Мои рецепты</a></p>-->
-    <br>
+        <form action="/upload" method="post" enctype="multipart/form-data" class="button_load">
+            <input type="file" name="avatar" accept=".jpg, .png, .jpeg">
+            <input type="submit" value="Upload" name="upload">
+        </form>
+        <#if user?has_content>
+        <p><b>Nickname:</b> ${user.nick}
+        </p>
+        <p><b>Login:</b> ${user.login}
+        </p>
+        <p><b>Email:</b> ${user.email}
+        </p>
+        </#if>
+        <form action="/profile" method="post">
+            <input type="submit" value="Sign Out" name="exit">
+        </form>
+    </div>
+    </body>
 </#macro>
+</html>

@@ -8,6 +8,7 @@ import ru.itis.ruzavin.repositories.UserRepositoryJdbcImpl;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,11 +21,13 @@ public class SecurityServiceImpl implements SecurityService{
 
 	private final UserRepository userRepository;
 
-	private static String SALT = "sdw132lsap23sd";
+	//private static String SALT = "sdw132lsap23sd";
 
 	private final static String USER_AUTH_COOKIE_NAME = "userAuth";
 
-	private final static int AUTH_COOKIE_MAX_AGE = 60 * 60;
+	private final static int AUTH_COOKIE_MAX_AGE = 60 * 60 * 12;
+
+	public final static String SESSION_AUTH_ATTRIBUTE_NAME = "isAuth";
 
 	public SecurityServiceImpl() {
 		Properties properties = new Properties();
@@ -38,18 +41,21 @@ public class SecurityServiceImpl implements SecurityService{
 
 	@Override
 	public boolean signIn(HttpServletRequest req, HttpServletResponse response) {
-		if(isSigned(req)){
-			return true;
-		}
 		String password = req.getParameter("userPass");
 		String login = req.getParameter("userLogin");
 		Optional<UserDTO> userByLogin = userRepository.findUserByLogin(login);
 		if(userByLogin.isPresent() && userByLogin.get().getPassword().equals(encrypt(password))){
-			req.setAttribute("user",userByLogin.get());
-			createAndSendAuthCookie(response);
+			setSessionAndCookie(req, response, userByLogin.get());
 			return true;
 		}
 		return false;
+	}
+
+	private void setSessionAndCookie(HttpServletRequest req, HttpServletResponse response, UserDTO userByLogin) {
+		HttpSession session = req.getSession(true);
+		session.setAttribute(SESSION_AUTH_ATTRIBUTE_NAME, true);
+		session.setAttribute("user", userByLogin);
+		createAndSendAuthCookie(response, req);
 	}
 
 	@Override
@@ -67,6 +73,10 @@ public class SecurityServiceImpl implements SecurityService{
 
 	@Override
 	public boolean isSigned(HttpServletRequest req) {
+		HttpSession session = req.getSession(false);
+		if(session != null && session.getAttribute(SESSION_AUTH_ATTRIBUTE_NAME).equals(true)){
+			return true;
+		}
 		Cookie[] cookies = req.getCookies();
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(USER_AUTH_COOKIE_NAME)) {
@@ -80,7 +90,7 @@ public class SecurityServiceImpl implements SecurityService{
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("MD5");
-			password += SALT;
+			//password += SALT;
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
 			return DatatypeConverter.printHexBinary(digest).toUpperCase();
@@ -89,8 +99,8 @@ public class SecurityServiceImpl implements SecurityService{
 		}
 	}
 
-	private void createAndSendAuthCookie(HttpServletResponse response) {
-		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, "true");
+	private void createAndSendAuthCookie(HttpServletResponse response, HttpServletRequest request) {
+		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, (String) request.getAttribute("userLogin"));
 		userAuthCookie.setMaxAge(AUTH_COOKIE_MAX_AGE);
 		response.addCookie(userAuthCookie);
 	}

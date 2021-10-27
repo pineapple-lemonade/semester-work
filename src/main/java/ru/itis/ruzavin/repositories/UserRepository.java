@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface UserRepository {
 	void save(UserDTO user);
 	Optional<UserDTO> findUserByLogin(String login);
+	void updateAvatar(UserDTO userDTO);
 }

@@ -20,6 +20,9 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 	//language=SQL
 	private final static String SQL_FIND_USER_BY_LOGIN = "select * from users where login = ?";
 
+	//language=SQL
+	private static final String SQL_UPDATE_USER_AVATAR = "UPDATE users SET avatar_url = ? WHERE login = ?";
+
 	private final DataSource dataSource;
 
 	private final Function<ResultSet, UserDTO> rowMapper = row -> {
@@ -60,6 +63,18 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 			} else {
 				return Optional.empty();
 			}
+		} catch (SQLException throwables) {
+			throw new IllegalArgumentException(throwables);
+		}
+	}
+
+	@Override
+	public void updateAvatar(UserDTO userDTO) {
+		try (Connection connection = dataSource.getConnection();
+		PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_AVATAR)) {
+			preparedStatement.setString(1, userDTO.getAvatarUrl());
+			preparedStatement.setString(2, userDTO.getLogin());
+			preparedStatement.executeUpdate();
 		} catch (SQLException throwables) {
 			throw new IllegalArgumentException(throwables);
 		}

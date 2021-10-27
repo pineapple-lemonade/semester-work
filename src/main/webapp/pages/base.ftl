@@ -1,12 +1,13 @@
+<#ftl encoding='UTF-8'>
 <html lang="en">
 <head>
     <title><@title></@title></title>
 </head>
 
 <body>
-<div id="header">
-    <H1><@header></@header></H1>
-</div>
+<#--<div id="header">-->
+<#--    <H1><@header></@header></H1>-->
+<#--</div>-->
 
 
 <div class="content1">

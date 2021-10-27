@@ -1,22 +1,45 @@
-<#include "base.ftl">
 
-<html lang="en">
-<#macro title>SignUp</#macro>
-<#macro header>SignUp</#macro>
-<#macro content>
-    <#if isFailedToSignUp??><h2>User is already exists!</h2></#if>
+<html>
+
+<body>
+<title>Sign Up</title>
+</body>
+<style>
+    @font-face {
+        font-family: Helvetica;
+        src: url(/fonts/Helvetica.ttf)
+    }
+
+    html {
+        font-family: Helvetica, system-ui;
+    }
+
+    .container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        margin-top: 20px;
+    }
+</style>
+
     <body>
-    <form action="/signUp" method="post">
-        Email:<input type="text" name="userEmail"/>
-        <br>
-        Nickname:<input type="text" name="userNick"/>
-        <br>
-        Login:<input type="text" name="userLogin"/>
-        <br>
-        Password:<input type="password" name="userPass"/>
-        <br>
-        <input type="submit" value="SignUp"/>
-    </form>
+    <div class="container">
+        <form action="/signUp" method="post">
+            <input name="userNick" type="text" placeholder="NickName"/>
+            <input name="userLogin" type="text" placeholder="Login"/>
+            <input name="userEmail" type="email" placeholder="Email"/>
+            <input name="userPass" type="password" placeholder="Password"/>
+            <input type="submit" value="Save and Enter">
+        </form>
+    </div>
     </body>
-</#macro>
 </html>

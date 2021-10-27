@@ -16,14 +16,17 @@ public class SignUpServlet extends HttpServlet {
 	private SecurityService securityService;
 
 	@Override
+	public void init() throws ServletException {
+		securityService = new SecurityServiceImpl();
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.sendRedirect("pages/signUp.ftl");
+		req.getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		securityService = new SecurityServiceImpl();
-
 		if (securityService.signUp(req)) {
 			req.getRequestDispatcher("/signIn").forward(req, resp);
 		} else {
