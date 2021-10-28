@@ -39,7 +39,7 @@
     <body>
     <div class="container">
         <h1>Your Profile</h1>
-            <#if user.avatarUrl?has_content>
+            <#if user.avatarUrl??>
                 <img class="avatar" alt="IMAGE" src="${user.avatarUrl}"/>
             <#else>
                 <img class="avatar" alt="IMAGE" src="/files/img.png"/>
@@ -57,7 +57,7 @@
         <p><b>Email:</b> ${user.email}
         </p>
         </#if>
-        <form action="/profile" method="post">
+        <form action="/signOut" method="post">
             <input type="submit" value="Sign Out" name="exit">
         </form>
     </div>

@@ -21,11 +21,10 @@ public class SecurityServiceImpl implements SecurityService{
 
 	private final UserRepository userRepository;
 
-	//private static String SALT = "sdw132lsap23sd";
-
 	private final static String USER_AUTH_COOKIE_NAME = "userAuth";
 
 	private final static int AUTH_COOKIE_MAX_AGE = 60 * 60 * 12;
+	private final static int AUTH_COOKIE_MIN_AGE = 1;
 
 	public final static String SESSION_AUTH_ATTRIBUTE_NAME = "isAuth";
 
@@ -65,7 +64,7 @@ public class SecurityServiceImpl implements SecurityService{
 		String password = encrypt(req.getParameter("userPass"));
 		String login = req.getParameter("userLogin");
 		if(!userRepository.findUserByLogin(login).isPresent()) {
-			userRepository.save(new UserDTO(nick, email, login, password));
+			userRepository.save(new UserDTO(nick, email, login, password, null));
 			return true;
 		}
 		return false;
@@ -86,11 +85,17 @@ public class SecurityServiceImpl implements SecurityService{
 		return false;
 	}
 
+	@Override
+	public void signOut(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession(true);
+		session.setAttribute(SESSION_AUTH_ATTRIBUTE_NAME, false);
+		deleteAuthCookie(response);
+	}
+
 	private String encrypt(String password){
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("MD5");
-			//password += SALT;
 			md.update(password.getBytes());
 			byte[] digest = md.digest();
 			return DatatypeConverter.printHexBinary(digest).toUpperCase();
@@ -105,4 +110,9 @@ public class SecurityServiceImpl implements SecurityService{
 		response.addCookie(userAuthCookie);
 	}
 
+	private void deleteAuthCookie(HttpServletResponse response){
+		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, "true");
+		userAuthCookie.setMaxAge(AUTH_COOKIE_MIN_AGE);
+		response.addCookie(userAuthCookie);
+	}
 }

@@ -31,7 +31,8 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 			String email = row.getString("email");
 			String login = row.getString("login");
 			String password = row.getString("password");
-			return new UserDTO(nick, email, login, password);
+			String avatarUrl = row.getString("avatar_url");
+			return new UserDTO(nick, email, login, password, avatarUrl);
 		} catch (SQLException e) {
 			throw new IllegalArgumentException(e);
 		}

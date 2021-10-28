@@ -25,6 +25,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void updateAvatar(UserDTO userDTO) {
-
+		userRepository.updateAvatar(userDTO);
 	}
 }

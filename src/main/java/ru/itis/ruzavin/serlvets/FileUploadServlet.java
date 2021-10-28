@@ -47,8 +47,7 @@ public class FileUploadServlet extends HttpServlet {
 		String url = (String) upload.get("url");
 		user.setAvatarUrl(url);
 		service.updateAvatar(user);
-		response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-		response.setHeader("Location", "/profile");
+		response.sendRedirect("/pages/profile.ftl");
 	}
 
 	private File getFile(HttpServletRequest request) throws IOException, ServletException {
