@@ -2,13 +2,13 @@
 <#include 'base.ftl'>
 
 <#macro title>
-    <title>Все рецепты</title>
+    <title>All Guides</title>
     <link rel="shortcut icon" href="/files/img_3.png" type="image/png">
 </#macro>
 
 <#macro content>
     <br>
-    <h1>Все рецепты</h1>
+    <h1>All guides</h1>
     <br>
 
     <form action="/allGuides" method="post" novalidate>

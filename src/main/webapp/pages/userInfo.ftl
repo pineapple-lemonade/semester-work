@@ -36,12 +36,10 @@
             </tr>
         </table>
         <br>
-        <small class="text-muted" style="font-size:20px"><a href="/chat?id=${detailUser.id}">Написать</a></small>
-        <br>
         <br>
     <#else>
         <br>
-        <p class="lead"><em>Что-то пошло не так...</em></p>
+        <p class="lead"><em>Something went wrong</em></p>
         <br>
     </#if>
 
