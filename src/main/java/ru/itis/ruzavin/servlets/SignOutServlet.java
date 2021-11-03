@@ -1,4 +1,4 @@
-package ru.itis.ruzavin.serlvets;
+package ru.itis.ruzavin.servlets;
 
 import ru.itis.ruzavin.services.SecurityService;
 import ru.itis.ruzavin.services.SecurityServiceImpl;
@@ -16,7 +16,7 @@ public class SignOutServlet extends HttpServlet {
 	private SecurityService securityService;
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		securityService.signOut(req, resp);
 		resp.sendRedirect("/signIn");
 	}

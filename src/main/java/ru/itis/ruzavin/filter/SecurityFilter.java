@@ -7,12 +7,13 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/profile")
-public class SignInFilter implements Filter {
+@WebFilter(urlPatterns = {"/profile","/addGuide", "/guideInfo", "/userInfo", "/addBuild", "/buildInfo"})
+public class SecurityFilter implements Filter {
 
-	SecurityService securityService;
+	private SecurityService securityService;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -24,11 +25,15 @@ public class SignInFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 
-		if (securityService.isSigned(req)) {
-			req.getRequestDispatcher("/profile").forward(req, resp);
-		} else {
-			req.getRequestDispatcher("/signIn").forward(req, resp);
+		if (!securityService.isSigned(req)) {
+			resp.sendRedirect("/signIn");
+			return;
 		}
+
+
+
+		HttpSession session = req.getSession(false);
+		req.setAttribute("user", session.getAttribute("user"));
 
 		chain.doFilter(req, resp);
 	}

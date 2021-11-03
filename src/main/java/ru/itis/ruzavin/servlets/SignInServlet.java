@@ -1,4 +1,5 @@
-package ru.itis.ruzavin.serlvets;
+package ru.itis.ruzavin.servlets;
+
 
 import ru.itis.ruzavin.services.SecurityService;
 import ru.itis.ruzavin.services.SecurityServiceImpl;
@@ -10,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "signUpServlet", urlPatterns = "/signUp")
-public class SignUpServlet extends HttpServlet {
+@WebServlet(name = "signInServlet", urlPatterns = "/signIn")
+public class SignInServlet extends HttpServlet {
 
 	private SecurityService securityService;
 
@@ -22,16 +23,17 @@ public class SignUpServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
+		req.getRequestDispatcher("/pages/signIn.ftl").forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (securityService.signUp(req)) {
-			req.getRequestDispatcher("/signIn").forward(req, resp);
+		if(securityService.signIn(req, resp)){
+			resp.sendRedirect("/profile");
 		} else {
-			req.setAttribute("isFailedToSignUp", true);
-			req.getRequestDispatcher("/pages/signUp.ftl").forward(req, resp);
+			req.setAttribute("userLogin", req.getParameter("userLogin"));
+			req.setAttribute("message","failed to sign in");
+			getServletContext().getRequestDispatcher("/pages/signIn.ftl").forward(req, resp);
 		}
 	}
 }

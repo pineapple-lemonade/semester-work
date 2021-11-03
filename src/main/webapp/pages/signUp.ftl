@@ -1,9 +1,10 @@
-
+<#include "base.ftl">
 <html>
 
-<body>
-<title>Sign Up</title>
-</body>
+<#macro title>
+    <title>Sign Up</title>
+    <link rel="shortcut icon" href="/files/img_3.png" type="image/png">
+</#macro>
 <style>
     @font-face {
         font-family: Helvetica;
@@ -12,13 +13,6 @@
 
     html {
         font-family: Helvetica, system-ui;
-    }
-
-    .container {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
     }
 
     form {
@@ -31,15 +25,34 @@
     }
 </style>
 
-    <body>
-    <div class="container">
-        <form action="/signUp" method="post">
+
+
+
+<#macro content>
+    <br>
+    <h1>Sign Up</h1>
+    <br>
+    <form action="/signUp" method="post">
+
+        <p class="lead">
+            Nickname:
             <input name="userNick" type="text" placeholder="NickName"/>
+        </p>
+        <p class="lead">
+            Login:
             <input name="userLogin" type="text" placeholder="Login"/>
+        </p>
+        <p class="lead">
+            Email:
             <input name="userEmail" type="email" placeholder="Email"/>
+        </p>
+        <p class="lead">
+            Password:
             <input name="userPass" type="password" placeholder="Password"/>
-            <input type="submit" value="Save and Enter">
-        </form>
-    </div>
-    </body>
+        </p>
+        <input type="submit" value="Sign Up">
+        <br>
+        <br>
+    </form>
+</#macro>
 </html>

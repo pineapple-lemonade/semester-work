@@ -1,6 +1,10 @@
+<#ftl encoding='UTF-8'>
 <#include "base.ftl">
 <html>
-<#macro title>Profile</#macro>
+<#macro title>
+    <title>Profile</title>
+    <link rel="shortcut icon" href="/files/img_3.png" type="image/jpg">
+</#macro>
 <style>
     @font-face {
         font-family: Helvetica;
@@ -9,13 +13,6 @@
 
     html {
         font-family: Helvetica, system-ui;
-    }
-
-    .container {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
     }
 
     .avatar {
@@ -36,31 +33,64 @@
 </style>
 
 <#macro content>
-    <body>
-    <div class="container">
-        <h1>Your Profile</h1>
-            <#if user.avatarUrl??>
-                <img class="avatar" alt="IMAGE" src="${user.avatarUrl}"/>
-            <#else>
-                <img class="avatar" alt="IMAGE" src="/files/img.png"/>
-            </#if>
 
-        <form action="/upload" method="post" enctype="multipart/form-data" class="button_load">
-            <input type="file" name="avatar" accept=".jpg, .png, .jpeg">
-            <input type="submit" value="Upload" name="upload">
-        </form>
-        <#if user?has_content>
-        <p><b>Nickname:</b> ${user.nick}
+
+    <h1>Your profile</h1>
+    <table style="margin-left:auto;margin-right:auto;">
+        <tr>
+        <tr>
+            <#if user.avatarUrl??>
+                <td><img alt="user_img" src="${user.avatarUrl}" class="avatar"></td>
+            <#else>
+                <td><img alt="user_img" src="/files/img.png" class="avatar"></td>
+            </#if>
+        </tr>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <h2>
+                            <strong>Nickname: ${user.nick}</strong>
+                        </h2>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>
+                        <h3>
+                            <em>Login: ${user.login} </em>
+                        </h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>
+                            <em>Email: ${user.email} </em>
+                        </h3>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        </tr>
+    </table>
+    <form action="/upload" method="post" novalidate enctype="multipart/form-data" class="button_load">
+        <br>
+        <p style="font-size:25px">
+            Change avatar
         </p>
-        <p><b>Login:</b> ${user.login}
+
+        <p class="lead">
+            <input name="avatar" type="file" accept=".jpg, .png, .jpeg">
         </p>
-        <p><b>Email:</b> ${user.email}
+
+        <p class="lead">
+            <input type="submit" name="upload" value="Change">
         </p>
-        </#if>
-        <form action="/signOut" method="post">
-            <input type="submit" value="Sign Out" name="exit">
-        </form>
-    </div>
-    </body>
+    </form>
+
+    <br>
+        <p class="lead"><a href="/signOut">Sign Out</a></p>
+    <br>
 </#macro>
 </html>

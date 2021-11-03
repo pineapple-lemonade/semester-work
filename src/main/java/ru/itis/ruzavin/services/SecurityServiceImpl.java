@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -21,10 +22,10 @@ public class SecurityServiceImpl implements SecurityService{
 
 	private final UserRepository userRepository;
 
-	private final static String USER_AUTH_COOKIE_NAME = "userAuth";
+	public final static String USER_AUTH_COOKIE_NAME = "userAuth";
 
 	private final static int AUTH_COOKIE_MAX_AGE = 60 * 60 * 12;
-	private final static int AUTH_COOKIE_MIN_AGE = 1;
+	private final static int AUTH_COOKIE_MIN_AGE = 0;
 
 	public final static String SESSION_AUTH_ATTRIBUTE_NAME = "isAuth";
 
@@ -42,19 +43,23 @@ public class SecurityServiceImpl implements SecurityService{
 	public boolean signIn(HttpServletRequest req, HttpServletResponse response) {
 		String password = req.getParameter("userPass");
 		String login = req.getParameter("userLogin");
+		String checkbox = req.getParameter("isRemember");
+		System.out.println(checkbox);
 		Optional<UserDTO> userByLogin = userRepository.findUserByLogin(login);
 		if(userByLogin.isPresent() && userByLogin.get().getPassword().equals(encrypt(password))){
-			setSessionAndCookie(req, response, userByLogin.get());
+			setSessionAndCookie(req, response, userByLogin.get(), checkbox);
 			return true;
 		}
 		return false;
 	}
 
-	private void setSessionAndCookie(HttpServletRequest req, HttpServletResponse response, UserDTO userByLogin) {
+	private void setSessionAndCookie(HttpServletRequest req, HttpServletResponse response, UserDTO userByLogin, String checkbox) {
 		HttpSession session = req.getSession(true);
 		session.setAttribute(SESSION_AUTH_ATTRIBUTE_NAME, true);
 		session.setAttribute("user", userByLogin);
-		createAndSendAuthCookie(response, req);
+		if(checkbox != null){
+			createAndSendAuthCookie(response, req);
+		}
 	}
 
 	@Override
@@ -63,8 +68,17 @@ public class SecurityServiceImpl implements SecurityService{
 		String email = req.getParameter("userEmail");
 		String password = encrypt(req.getParameter("userPass"));
 		String login = req.getParameter("userLogin");
+		if (nick.equals("") || email.equals("") || login.equals("")){
+			return false;
+		}
+		List<UserDTO> all = userRepository.findAll();
+		for (UserDTO userDTO:all){
+			if(userDTO.getNick().equals(nick) || userDTO.getEmail().equals(email)){
+				return false;
+			}
+		}
 		if(!userRepository.findUserByLogin(login).isPresent()) {
-			userRepository.save(new UserDTO(nick, email, login, password, null));
+			userRepository.save(new UserDTO(nick, email, login, password, "/files/img.png"));
 			return true;
 		}
 		return false;
@@ -72,23 +86,22 @@ public class SecurityServiceImpl implements SecurityService{
 
 	@Override
 	public boolean isSigned(HttpServletRequest req) {
-		HttpSession session = req.getSession(false);
-		if(session != null && session.getAttribute(SESSION_AUTH_ATTRIBUTE_NAME).equals(true)){
-			return true;
-		}
+		HttpSession session = req.getSession();
 		Cookie[] cookies = req.getCookies();
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(USER_AUTH_COOKIE_NAME)) {
+				session.setAttribute("user", userRepository.findUserByLogin(cookie.getValue()).get());
 				return true;
 			}
 		}
-		return false;
+		return session.getAttribute(SESSION_AUTH_ATTRIBUTE_NAME) != null && session.getAttribute(SESSION_AUTH_ATTRIBUTE_NAME).equals(true);
 	}
 
 	@Override
 	public void signOut(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession(true);
-		session.setAttribute(SESSION_AUTH_ATTRIBUTE_NAME, false);
+		session.removeAttribute(SESSION_AUTH_ATTRIBUTE_NAME);
+		session.removeAttribute("user");
 		deleteAuthCookie(response);
 	}
 
@@ -105,14 +118,15 @@ public class SecurityServiceImpl implements SecurityService{
 	}
 
 	private void createAndSendAuthCookie(HttpServletResponse response, HttpServletRequest request) {
-		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, (String) request.getAttribute("userLogin"));
+		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, request.getParameter("userLogin"));
 		userAuthCookie.setMaxAge(AUTH_COOKIE_MAX_AGE);
 		response.addCookie(userAuthCookie);
 	}
 
 	private void deleteAuthCookie(HttpServletResponse response){
-		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, "true");
+		Cookie userAuthCookie = new Cookie(USER_AUTH_COOKIE_NAME, "false");
 		userAuthCookie.setMaxAge(AUTH_COOKIE_MIN_AGE);
 		response.addCookie(userAuthCookie);
 	}
+
 }

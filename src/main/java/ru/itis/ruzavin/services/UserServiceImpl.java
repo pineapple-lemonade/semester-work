@@ -7,6 +7,7 @@ import ru.itis.ruzavin.repositories.UserRepositoryJdbcImpl;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 public class UserServiceImpl implements UserService{
@@ -26,5 +27,25 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateAvatar(UserDTO userDTO) {
 		userRepository.updateAvatar(userDTO);
+	}
+
+	@Override
+	public UserDTO findUserByLogin(String login){
+		return userRepository.findUserByLogin(login).get();
+	}
+
+	@Override
+	public UserDTO findUserByNick(String  id) {
+		return userRepository.findByNick(id);
+	}
+
+	@Override
+	public UserDTO findUserById(int id) {
+		return userRepository.findById(id);
+	}
+
+	@Override
+	public List<UserDTO> findAll() {
+		return userRepository.findAll();
 	}
 }

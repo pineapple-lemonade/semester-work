@@ -1,7 +1,10 @@
 <#include "base.ftl">
 
-<html>
-<#macro title>Sign In</#macro>
+<html lang="en">
+<#macro title>
+    <title>SignIn</title>
+    <link rel="shortcut icon" href="/files/img_3.png" type="image/jpg">
+</#macro>
 <style>
     @font-face {
         font-family: Helvetica;
@@ -12,23 +15,33 @@
         font-family: Helvetica, system-ui;
     }
 
-    .container {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
 </style>
+<#if message??>
+    <script>
+        alert("failed to auth")
+    </script>
+</#if>
 <#macro content>
-    <body>
-    <div class="container">
+    <br>
+    <h1>Sign In</h1>
+    <br>
         <form action="/signIn" method="post">
-            <input name="userLogin" type="text" placeholder="Login"/>
-            <input name="userPass" type="password" placeholder="Password"/>
-            <input type="submit" value="Enter">
+            <p class="lead">
+                Login:<br>
+                <input name="userLogin" type="text" placeholder="Login"/>
+            </p>
+            <p class="lead">
+                Password:<br>
+                <input name="userPass" type="password" placeholder="Password"/>
+            </p>
+            <br>
+            <p class="lead">
+                Remember me:
+                <input name="isRemember" type="checkbox">
+            </p>
+            <br>
+            <p class="lead"><input type="submit" value="Enter"></p>
+            <br>
         </form>
-    </div>
-    </body>
 </#macro>
 </html>
