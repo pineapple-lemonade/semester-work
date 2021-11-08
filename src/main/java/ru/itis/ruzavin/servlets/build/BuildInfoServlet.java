@@ -1,4 +1,4 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.build;
 
 import ru.itis.ruzavin.dto.BuildCommentDTO;
 import ru.itis.ruzavin.dto.BuildDTO;

@@ -1,6 +1,7 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.guide;
 
 import ru.itis.ruzavin.dto.GuideDTO;
+import ru.itis.ruzavin.helper.HTMLHelper;
 import ru.itis.ruzavin.helper.TextHelper;
 import ru.itis.ruzavin.services.GuideService;
 import ru.itis.ruzavin.services.GuideServiceImpl;
@@ -15,35 +16,36 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = "/allGuides")
-public class AllGuidesServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/allGuidesHandler")
+public class AllGuidesHandlerServlet extends HttpServlet {
 
 	private GuideService guideService;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<GuideDTO> guides = guideService.findAll();
-
-		mapGuidesList(req, resp, guides);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String title = req.getParameter("title");
-		List<GuideDTO> guideDTOS = guideService.findAllByTitle(title);
-		mapGuidesList(req, resp, guideDTOS);
+		if (title == null){
+			List<GuideDTO> guides = guideService.findAll();
+			mapGuides(resp, guides);
+			return;
+		}
+		List<GuideDTO> guides = guideService.findAllByTitle(title);
+		mapGuides(resp, guides);
 	}
 
-	private void mapGuidesList(HttpServletRequest req, HttpServletResponse resp, List<GuideDTO> guideDTOS) throws ServletException, IOException {
-		guideDTOS = guideDTOS.stream()
+	private void mapGuides(HttpServletResponse resp, List<GuideDTO> guides) throws IOException, ServletException {
+		guides = guides.stream()
 				.map(recipe -> new GuideDTO(recipe.getId(), recipe.getUserNick(), recipe.getTitle(),
 						TextHelper.editText(recipe.getText()), recipe.getPhotoUrl(), recipe.getData()))
 				.collect(Collectors.toList());
-		Collections.reverse(guideDTOS);
-		req.setAttribute("guidesList", guideDTOS);
 
-		req.getRequestDispatcher("/pages/allGuides.ftl").forward(req, resp);
+		Collections.reverse(guides);
+
+		resp.setContentType("text/plain");
+		resp.setCharacterEncoding("UTF-8");
+		resp.getWriter().write(HTMLHelper.makeGuideHTML(guides));
 	}
+
 
 	@Override
 	public void init() throws ServletException {

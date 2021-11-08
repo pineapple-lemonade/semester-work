@@ -1,4 +1,4 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.users;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

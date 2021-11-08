@@ -1,8 +1,6 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.users;
 
 import ru.itis.ruzavin.dto.UserDTO;
-import ru.itis.ruzavin.services.GuideService;
-import ru.itis.ruzavin.services.GuideServiceImpl;
 import ru.itis.ruzavin.services.UserService;
 import ru.itis.ruzavin.services.UserServiceImpl;
 
@@ -12,26 +10,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
 
-@WebServlet(urlPatterns = "/allUsers")
-public class AllUsersServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/userInfo")
+public class UserInfoServlet extends HttpServlet {
 
 	private UserService userService;
-
+	//private GuideService guideService;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<UserDTO> list = userService.findAll();
-		req.setAttribute("users", list);
+		UserDTO userNow = (UserDTO) req.getAttribute("user");
+		int id = Integer.parseInt(req.getParameter("id"));
 
+		if (userNow != null && userNow.getId() == id) {
+			req.getRequestDispatcher("/profile").forward(req, resp);
+		} else {
+			UserDTO user = userService.findUserById(id);
 
-		req.getRequestDispatcher("/pages/allUsers.ftl").forward(req, resp);
+			req.setAttribute("detailUser", user);
+
+			req.getRequestDispatcher("/pages/userInfo.ftl").forward(req, resp);
+		}
 	}
 
 	@Override
 	public void init() throws ServletException {
 		userService = new UserServiceImpl();
+		//guideService = new GuideServiceImpl();
 	}
 }

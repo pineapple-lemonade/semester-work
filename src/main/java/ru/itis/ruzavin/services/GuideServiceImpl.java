@@ -49,7 +49,7 @@ public class GuideServiceImpl implements GuideService{
 		List<Guide> allByTitle = guideRepository.findAllByTitle(title);
 
 		return allByTitle.stream().map(guide -> new GuideDTO(guide.getId(),
-						userService.findUserById(guide.getId()).getNick(),
+						userService.findUserById(guide.getUserId()).getNick(),
 						guide.getTitle(), guide.getText(), guide.getPhotoUrl(), guide.getData()))
 				.collect(Collectors.toList());
 	}

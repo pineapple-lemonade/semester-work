@@ -52,7 +52,7 @@ public class BuildServiceImpl implements BuildService {
 		List<Build> allByTitle = buildRepository.findAllByTitle(title);
 
 		return allByTitle.stream().map(build -> new BuildDTO(build.getId(),
-						userService.findUserById(build.getId()).getNick(),
+						userService.findUserById(build.getUserId()).getNick(),
 						build.getTitle(), build.getText(), build.getPhotoUrl(), build.getData()))
 				.collect(Collectors.toList());
 	}

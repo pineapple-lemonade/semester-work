@@ -2,47 +2,53 @@
 <#include 'base.ftl'>
 
 <#macro title>
-    <title>All builds</title>
+    <title>All Builds</title>
     <link rel="shortcut icon" href="/files/img_3.png" type="image/png">
+
 </#macro>
 
 <#macro content>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        window.onload = function showAll() {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("result").innerHTML = this.responseText;
+                }
+            }
+            xmlhttp.open("GET", "/allBuildsHandler", true);
+            xmlhttp.send();
+        }
+
+        function showResult(title) {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("result").innerHTML = this.responseText;
+                }
+            }
+            xmlhttp.open("GET", "/allBuildsHandler?title=" + title, true);
+            xmlhttp.send();
+        }
+    </script>
+
     <br>
     <h1>All builds</h1>
     <br>
 
-    <form action="/allBuilds" method="post" novalidate>
+    <form>
         <p class="lead" id="1" style="float: left; margin-right: 50px;">
             Search for title:<br>
-            <input name="title" type="text"/><br>
-        </p>
-
-        <br>
-        <p class="lead" style="margin-right: 1000px;">
-            <input type="submit" value="Search">
+            <input name="title" type="text" onkeyup="showResult(this.value)"><br>
         </p>
     </form>
 
     <br>
+    <br>
+    <br>
+    <br>
 
-    <#if builds??>
-        <#if builds?has_content>
-            <#list builds as build>
-
-                    <div class="alert alert-dark" role="alert">
-                        <a href="/buildInfo?id=${build.id}">
-                            <h3>${build.title}</h3>
-                        </a>
-                        <div>${build.text}</div>
-                        <br>
-                        <div><small class="text-muted">By: ${build.userNick} At: ${build.data}</small></div>
-                        <div><small class="text-muted"><strong>Build Id:</strong> ${build.id}</small></div>
-                    </div>
-            </#list>
-
-        <#else>
-            <p class="lead">No builds that match these requirements!</p>
-        </#if>
-    </#if>
+    <div id="result"></div>
 
 </#macro>

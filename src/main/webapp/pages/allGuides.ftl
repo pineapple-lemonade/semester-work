@@ -4,44 +4,51 @@
 <#macro title>
     <title>All Guides</title>
     <link rel="shortcut icon" href="/files/img_3.png" type="image/png">
+
 </#macro>
 
 <#macro content>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        window.onload = function showAll() {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("result").innerHTML = this.responseText;
+                }
+            }
+            xmlhttp.open("GET", "/allGuidesHandler", true);
+            xmlhttp.send();
+        }
+
+        function showResult(title) {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("result").innerHTML = this.responseText;
+                }
+            }
+            xmlhttp.open("GET", "/allGuidesHandler?title=" + title, true);
+            xmlhttp.send();
+        }
+    </script>
+
     <br>
     <h1>All guides</h1>
     <br>
 
-    <form action="/allGuides" method="post" novalidate>
+    <form>
         <p class="lead" id="1" style="float: left; margin-right: 50px;">
             Search for title:<br>
-            <input name="title" type="text"/><br>
-        </p>
-
-        <br>
-        <p class="lead" style="margin-right: 1000px;">
-            <input type="submit" value="Find">
+            <input name="title" type="text" onkeyup="showResult(this.value)"><br>
         </p>
     </form>
 
     <br>
-        <#if guidesList?has_content>
-            <#list guidesList as guide>
-                    <div class="alert alert-dark" role="alert">
-                        <a href="/guideInfo?id=${guide.id}">
-                            <h3>${guide.title}</h3>
-                        </a>
-                        <br>
-                        <img src="${guide.photoUrl}" width="665" height="350">
-                        <br>
-                        <div>${guide.text}</div>
-                        <br>
-                        <div><small class="text-muted">By: ${guide.userNick} At: ${guide.data}</small></div>
-                        <div><small class="text-muted"><strong>Guide Id:</strong> ${guide.id}</small></div>
-                    </div>
-            </#list>
+    <br>
+    <br>
+    <br>
 
-        <#else>
-            <p class="lead">No guides that match these requirements!</p>
-        </#if>
+    <div id="result"></div>
 
 </#macro>

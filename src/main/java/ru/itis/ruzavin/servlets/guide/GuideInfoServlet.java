@@ -1,4 +1,4 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.guide;
 
 import ru.itis.ruzavin.dto.GuideCommentDTO;
 import ru.itis.ruzavin.dto.GuideDTO;

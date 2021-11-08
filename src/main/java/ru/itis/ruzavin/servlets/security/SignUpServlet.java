@@ -1,4 +1,4 @@
-package ru.itis.ruzavin.servlets;
+package ru.itis.ruzavin.servlets.security;
 
 import ru.itis.ruzavin.services.SecurityService;
 import ru.itis.ruzavin.services.SecurityServiceImpl;
